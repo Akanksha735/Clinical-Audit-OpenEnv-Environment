@@ -11,8 +11,10 @@ class ActionInput(BaseModel):
 
 
 @app.get("/reset")
+@app.post("/reset")
 def reset():
-    return env.reset()
+    obs = env.reset()
+    return obs
 
 
 @app.post("/step")
