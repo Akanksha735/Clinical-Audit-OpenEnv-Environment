@@ -28,3 +28,14 @@ pip install -r requirements.txt
 python -m uvicorn api:app --reload
 Agent receives clinical case → responds → environment evaluates with partial reward (0–1 scale)
 “Deployed on Hugging Face Spaces using FastAPI”
+
+## Problem
+Healthcare decisions are often inconsistent. This environment simulates clinical cases and evaluates decisions using an AI-agent style reward system.
+
+## Features
+Real-world clinical case simulation
+OpenEnv-style API (reset, step)
+Multi-level tasks: easy → medium → hard
+Reward scoring (0.0 – 1.0)
+Partial credit system (not binary)
+Deployed on Hugging Face Spaces
