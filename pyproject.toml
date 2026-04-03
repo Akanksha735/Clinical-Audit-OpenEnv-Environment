@@ -1,0 +1,15 @@
+[project]
+name = "clinical-audit-env"
+version = "0.1.0"
+description = "Clinical audit OpenEnv environment"
+authors = [{name = "Akanksha"}]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "requests"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
