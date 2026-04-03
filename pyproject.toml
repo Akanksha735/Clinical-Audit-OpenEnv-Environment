@@ -3,12 +3,17 @@ name = "clinical-audit-env"
 version = "0.1.0"
 description = "Clinical audit OpenEnv environment"
 authors = [{name = "Akanksha"}]
+
 dependencies = [
     "fastapi",
     "uvicorn",
     "pydantic",
-    "requests"
+    "requests",
+    "openenv-core>=0.2.0"
 ]
+
+[project.scripts]
+server = "server.app:app"
 
 [build-system]
 requires = ["setuptools", "wheel"]
