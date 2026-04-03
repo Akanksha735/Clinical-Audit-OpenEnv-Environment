@@ -1,0 +1,35 @@
+name: clinical-audit-env
+description: AI environment for auditing clinical decisions for errors, risks, and missing information
+version: 0.1.0
+
+environment:
+  entry_point: environment:ClinicalAuditEnv
+
+tasks:
+  - id: easy
+    description: Identify missing information in the clinical decision
+
+  - id: medium
+    description: Identify incorrect or unsafe decisions
+
+  - id: hard
+    description: Perform a full clinical audit including errors, risks, and missing steps
+
+observation_space:
+  type: object
+  properties:
+    patient:
+      type: object
+    decision:
+      type: object
+    task_type:
+      type: string
+
+action_space:
+  type: object
+  properties:
+    response:
+      type: string
+
+reward:
+  type: float
