@@ -1,91 +1,40 @@
 import os
-import time
 import requests
 
-
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
-MODEL_NAME = os.getenv("MODEL_NAME", "baseline-agent")
-HF_TOKEN = os.getenv("HF_TOKEN", None)
-
-
-def safe_json(response):
-    try:
-        return response.json()
-    except Exception:
-        return None
-
 
 def run_episode():
     try:
-        # Reset environment
-        reset_res = requests.get(f"{API_BASE_URL}/reset", timeout=5)
-        
-        if reset_res.status_code != 200:
-            print("❌ Reset failed:", reset_res.text)
-            return 0
-        
-        observation = safe_json(reset_res)
-        
-        if observation is None:
-            print("❌ Invalid JSON from /reset")
-            return 0
+        # RESET
+        reset_res = requests.post(f"{API_BASE_URL}/reset")
+        obs = reset_res.json()
 
-        print("\n--- NEW CASE ---")
-        print(observation)
+        # Print START
+        print("[START] task=clinical_audit", flush=True)
 
-        # Simple baseline agent (static reasoning)
+        # ACTION
         action = {
-            "response": "Patient requires further diagnostic evaluation before treatment decisions"
+            "response": "Doctor prescribed unnecessary antibiotics and missed proper diagnosis"
         }
 
-        # Take step
-        step_res = requests.post(
-            f"{API_BASE_URL}/step",
-            json=action,
-            timeout=5
-        )
+        # STEP
+        step_res = requests.post(f"{API_BASE_URL}/step", json=action)
+        result = step_res.json()
 
-        if step_res.status_code != 200:
-            print("❌ Step failed:", step_res.text)
-            return 0
+        reward = result["reward"]["score"]
 
-        result = safe_json(step_res)
+        # Print STEP
+        print(f"[STEP] step=1 reward={reward}", flush=True)
 
-        if result is None:
-            print("❌ Invalid JSON from /step")
-            return 0
+        # Print END
+        print(f"[END] task=clinical_audit score={reward} steps=1", flush=True)
 
-        print("\n--- RESULT ---")
-        print(result)
-
-        score = result.get("reward", {}).get("score", 0)
-        return score
-
-    except requests.exceptions.RequestException as e:
-        print("❌ Network error:", str(e))
-        return 0
+        return reward
 
     except Exception as e:
-        print("❌ Unexpected error:", str(e))
+        print(f"Error: {e}", flush=True)
         return 0
 
 
-# =========================
-# MAIN LOOP
-# =========================
 if __name__ == "__main__":
-    print("⏳ Waiting for server...")
-
-   
-    time.sleep(2)
-
-    episodes = 3
-    total_score = 0
-
-    for i in range(episodes):
-        print(f"\n=== Episode {i+1} ===")
-        score = run_episode()
-        total_score += score
-
-    avg_score = total_score / episodes if episodes > 0 else 0
-    print(f"\n🔥 Final Average Score: {avg_score}")
+    run_episode()
